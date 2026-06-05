@@ -1,5 +1,5 @@
 provider "proxmox" {
-	endpoint = "https://pve.corp.local:8006/"
+	endpoint = var.proxmox_endpoint
 	insecure = true
 
 	api_token = var.proxmox_api_token
