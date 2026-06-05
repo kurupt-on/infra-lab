@@ -1,0 +1,4 @@
+terraform/proxmox/terraform.tfvars
+terraform/proxmox/terraform.tfstate
+terraform/proxmox/terraform.tfstate.*
+terraform/proxmox/.terraform/
