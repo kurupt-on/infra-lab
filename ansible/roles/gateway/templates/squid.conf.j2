@@ -1,0 +1,27 @@
+http_port {{ squid_port }}
+
+visible_hostname gateway.corp.local
+
+cache deny all
+
+acl localnet src 10.0.0.0/24
+acl vpnnet src 10.10.0.0/24
+
+acl SSL_ports port 443
+acl Safe_ports port 80
+acl Safa_ports port 443
+acl Safa_ports port 21
+acl Safa_ports port 1025-65535
+
+acl CONNET method CONNECT
+
+http_access allow localnet
+http_access allow vpnnet
+
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+
+http_access deny all
+
+access_log daemon:/var/log/squid/access.log
+

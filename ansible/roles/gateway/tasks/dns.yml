@@ -1,0 +1,25 @@
+---
+- name: Instalar unbound
+  apt:
+    name: unbound
+    state: present
+
+- name: Criar diretório de configuração local
+  file:
+   path: /etc/unbound/unbound.conf.d
+   state: directory
+  
+- name: Configurar zona corp.local
+  template:
+    src: corp-local.conf.j2
+    dest: /etc/unbound/unbound.conf.d/corp-local.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart unbound
+
+- name: Habilitar unbound
+  service: 
+    name: unbound
+    enabled: true
+    state: started

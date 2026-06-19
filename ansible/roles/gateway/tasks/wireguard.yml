@@ -1,0 +1,45 @@
+---
+- name: Instalar Wireguard
+  apt:
+    name:
+      - wireguard
+      - wireguard-tools
+    state: present
+
+- name: Criar Diretório WierGuard
+  file:
+    path: /etc/wireguard
+    state: directory
+    mode: "0700"
+
+- name: Gerar chave privada
+  shell: |
+    umask 077
+    wg genkey > /etc/wireguard/server.key 
+  args:
+    creates: /etc/wireguard/server.key
+
+- name: Gerar chave pública
+  shell: |
+    wg pubkey < /etc/wireguard/server.key > //etc/wireguard/server.pub
+  args:
+    creates: /etc/wireguard/server.pub
+
+- name: Ler chave privada
+  slurp:
+    src: /etc/wireguard/server.key
+  register: wg_private_key
+
+- name: Gerar configuração WireGuard
+  template:
+    src: wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Habilitar WireGuard
+  service:
+    name: wg-quick@wg0.service
+    enabled: true
+    state: started

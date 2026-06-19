@@ -1,0 +1,17 @@
+---
+- import_tasks: network.yml
+- import_tasks: nftables.yml
+- import_tasks: dns.yml
+- import_tasks: ca.yml
+- import_tasks: certificates.yml
+- import_tasks: wireguard.yml
+- import_tasks: squid.yml
+
+- name: Configurar timezone
+  timezone:
+    name: America/Santarem
+
+- name: Garantir hostname
+  hostname:
+    name: gateway
+    

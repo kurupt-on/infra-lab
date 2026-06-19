@@ -1,0 +1,45 @@
+---
+- name: Instalar netplan
+  apt:
+    name:
+      - netplan.io
+    state: present
+
+- name: Criar configuração netplan
+  template:
+    src: 01-gateway.yml.j2
+    dest: /etc/netplan/01-gateway.yaml
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Habilitar systemd-networkd
+  service:
+    name: systemd-networkd
+    enabled: true
+
+- name: Desativar networking
+  service:
+    name: networking
+    enabled: false
+
+- name: Reiniciar o host
+  reboot:
+    msg: "Reiniciando o host para aplicar configurações de rede."
+    reboot_timeout: 600
+    post_reboot_delay: 10
+    test_command: whoami
+
+- name: Remover configuração ifupdown
+  file:
+    path: /etc/network/interfaces
+    state: absent
+   
+- name: Subir placa eth0
+  command: ip l set eth0 up
+
+- name: Subir placa eth1
+  command: ip l set eth1 up
+
+
+

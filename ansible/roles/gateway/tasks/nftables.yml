@@ -1,0 +1,28 @@
+---
+- name: intalar nftables
+  apt:
+    name: nftables
+    state: present
+
+- name: configurar nftables
+  template:
+    src: nftables.conf.j2
+    dest: /etc/nftables.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart nftables
+    
+- name: habilitar nftables
+  service:
+    name: nftables
+    enabled: true
+    state: started
+
+- name: habilitar ipv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    state: present
+    reload: true
+

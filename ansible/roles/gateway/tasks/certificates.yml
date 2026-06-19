@@ -1,0 +1,46 @@
+---
+- name: Gerar chave privada
+  command:
+    cmd: >
+      openssl genrsa
+      -out /etc/pki/corp/private/{{ item.name }}.key
+      4096
+  args:
+    creates: "/etc/pki/corp/private/{{ item.name }}.key"
+  loop: "{{ gateway_certificates }}"
+
+- name: Criar configuração SAN
+  template:
+    src: openssl-san.cnf.j2
+    dest: "/etc/pki/corp/csr/{{ item.name }}.cnf"
+    mode: "0600"
+  loop: "{{ gateway_certificates }}"
+
+- name: gerar CSR
+  command:
+    cmd: >
+      openssl req
+      -new 
+      -key /etc/pki/corp/private/{{ item.name }}.key
+      -out /etc/pki/corp/csr/{{ item.name }}.csr
+      -config /etc/pki/corp/csr/{{ item.name }}.cnf
+  args:
+    creates: "/etc/pki/corp/csr/{{ item.name }}.csr"
+  loop: "{{ gateway_certificates }}"
+
+- name: Assinar Certificados
+  command:
+    cmd: >
+      openssl x509
+      -req
+      -in /etc/pki/corp/csr/{{ item.name }}.csr
+      -CA /etc/pki/corp/ca.crt
+      -CAkey /etc/pki/corp/private/ca.key
+      -CAcreateserial
+      -out /etc/pki/corp/issued/{{ item.name }}.crt
+      -days 365
+      -sha256
+      -copy_extensions copy
+  args: 
+    creates: "/etc/pki/corp/issued/{{ item.name }}.crt"
+  loop: "{{ gateway_certificates }}"

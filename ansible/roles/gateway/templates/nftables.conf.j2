@@ -1,0 +1,44 @@
+#!/usr/bin/nft -f
+
+flush ruleset
+
+table inet filter {
+
+	chain input {
+		type filter hook input priority 0; policy drop;
+		
+		iif "lo" accept
+		ct state established,related accept
+
+		ip saddr {{ gateway_lan_network }} tcp dport 22 accept
+		ip saddr 192.168.55.101/32 tcp dport 22 accept
+		
+		udp dport 51820 accept
+
+		ip saddr {{ gateway_lan_network }} tcp dport 3128 accept
+		ip saddr {{ wireguard_network }} tcp dport 3128 accept
+
+		ip protocol icmp accept
+	}
+	chain forward {
+		type filter hook forward priority 0; policy drop;
+		
+		ct state established,related accept
+		
+		iifname "{{ gateway_lan_interface  }}" oifname "{{ gateway_wan_interface }}" accept
+		iifname "wg0" oifname "{{ gateway_lan_interface }}"
+	}
+	chain output {
+		type filter hook output priority 0; policy accept;
+	}
+
+}
+
+table ip nat {
+	chain postrouting {
+		type nat hook postrouting priority 100; policy accept;
+		
+		ip saddr {{ gateway_lan_network }} oifname "{{ gateway_wan_interface }}" masquerade
+		ip saddr {{ wireguard_network }} oifname "{{ gateway_wan_interface }}"masquerade
+	}
+}

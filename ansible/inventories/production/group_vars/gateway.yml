@@ -1,0 +1,69 @@
+gateway_hostname: gateway
+
+gateway_lan_interface: eth0
+
+gateway_lan_network: 10.0.0.0/24
+
+gateway_lan_address: 10.0.0.2/24
+
+gateway_dns_server: 10.0.0.2
+
+gateway_wan_interface: eth1
+
+gateway_wan_dhcp: true
+
+gateway_domain: corp.local
+
+gateway_dns_forwarders:
+  - 1.1.1.1
+  - 8.8.8.8
+
+gateway_dns_records:
+  gateway: 10.0.0.2
+  auth: 10.0.0.3
+  monitor: 10.0.0.4
+  db: 10.0.0.5
+  mail: 10.0.0.6
+  bkp: 10.0.0.7
+
+
+gateway_nameservers:
+  - 1.1.1.1
+  - 8.8.8.8
+
+pki_country: BR
+pki_state: Para
+pki_city: Santarem
+pki_org: Corp
+pki_unit: Infrastructure
+pki_common_name: Corp Root CA
+
+gateway_certificates:
+  - name: auth
+    cn: auth.corp.local
+    san:
+      - auth.corp.local
+
+  - name: monitor
+    cn: monitor.corp.local
+    san:
+      - monitor.corp.local
+
+  - name: mail
+    cn: mail.corp.local
+    san:
+      - mail.corp.local
+      - smtp.corp.local
+      - imap.corp.local
+
+wireguard_port: 51820
+
+wireguard_network: 10.10.0.0/24
+
+wireguard_address: 10.10.0.1/24
+
+squid_port: 3128
+
+squid_allowed_networks:
+  - 10.0.0.0/24
+  - 10.10.0.0/24

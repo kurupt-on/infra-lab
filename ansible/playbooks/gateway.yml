@@ -1,0 +1,7 @@
+---
+- hosts: gateway
+  become: true
+
+  roles:
+    - common
+    - gateway

@@ -1,0 +1,41 @@
+---
+- name: Instalar OpenSSL
+  apt:
+    name: openssl
+    state: present
+
+- name: Criar estrutura PKI
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0700"
+  loop:
+    - /etc/pki/corp
+    - /etc/pki/corp/private
+    - /etc/pki/corp/certs
+    - /etc/pki/corp/csr
+
+- name: Gerar chave da CA
+  command:
+    cmd: openssl genrsa -out /etc/pki/corp/private/ca.key 4096
+    creates: /etc/pki/corp/private/ca.key
+
+- name: Gerar certificado raiz
+  command: >
+    openssl req
+    -x509
+    -new
+    -nodes
+    -key /etc/pki/corp/private/ca.key
+    -sha256
+    -days 3650
+    -out /etc/pki/corp/ca.crt
+    -subj "/C={{ pki_country }}/ST={{ pki_state }}/L={{ pki_city }}/O={{ pki_org }}/OU={{ pki_unit }}/CN={{ pki_common_name }}"
+  args:
+    creates: /etc/pki/corp/ca.crt
+
+- name: Criar diretório issued
+  file:
+    path: /etc/pki/corp/issued
+    state: directory
+    mode: "0700"

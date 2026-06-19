@@ -1,0 +1,6 @@
+server:
+	local-zone: "{{ gateway_domain }}" static
+
+{% for host, ip in gateway_dns_records.items() %}
+	local-data: "{{ host }}.{{ gateway_domain }} IN A {{ ip }}" 
+{% endfor %}
