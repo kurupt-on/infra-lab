@@ -1,0 +1,26 @@
+---
+- name: Instalar ISC-DHCP
+  apt:
+    name: isc-dhcp-server
+    state: present
+
+- name: Configurar interfaces DHCP
+  copy:
+    dest: /etc/default/isc-dhcp-server
+    content: |
+      INTERFACESv4="eth0"
+      INTERFACESv6=""
+
+- name: Configurar DHCP
+  template:
+    src: dhcpd.conf.j2
+    dest: /etc/dhcp/dhcpd.conf
+    owner: root
+    group: root
+  notify: restart dhcp
+
+- name: Habilitar DHCP
+  service:
+    name: isc-dhcp-server
+    enabled: true
+    state: started

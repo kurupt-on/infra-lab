@@ -18,6 +18,9 @@ table inet filter {
 		ip saddr {{ gateway_lan_network }} tcp dport 3128 accept
 		ip saddr {{ wireguard_network }} tcp dport 3128 accept
 
+		udp dport 67 accept
+		udp dport 68 accept
+
 		ip protocol icmp accept
 	}
 	chain forward {

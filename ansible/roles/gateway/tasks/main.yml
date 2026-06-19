@@ -5,6 +5,7 @@
 - import_tasks: ca.yml
 - import_tasks: certificates.yml
 - import_tasks: wireguard.yml
+- import_tasks: dhcp.yml
 - import_tasks: squid.yml
 
 - name: Configurar timezone

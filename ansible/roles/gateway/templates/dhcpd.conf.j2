@@ -1,0 +1,18 @@
+authoritative;
+
+option domain-name "{{ dhcp_domain }}";
+
+option domain-name-servers {{ dhcp_dns_servers }};
+
+default-lease-time 3600;
+max-lease-time 7200;
+
+subnet {{ dhcp_subnet }} netmask {{ dhcp_netmask }} {
+		
+	range {{ dhcp_range_start }} {{ dhcp_range_end }};
+	option routers {{ dhcp_gateway }};
+	option broadcast-address 10.0.0.255;
+
+}
+
+
