@@ -4,3 +4,10 @@ provider "proxmox" {
 
   api_token = var.proxmox_api_token
 }
+
+module "containers" {
+  source = "./containers"
+
+  node_name = var.node_name
+  template = var.template
+}
