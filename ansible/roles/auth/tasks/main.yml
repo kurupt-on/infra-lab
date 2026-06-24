@@ -1,0 +1,9 @@
+- import_tasks: network.yml
+
+- name: Configurar timezone
+  timezone:
+    name: America/Santarem
+
+- name: Garantir hostname
+  hostname:
+    name: auth

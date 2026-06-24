@@ -1,0 +1,16 @@
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      addresses: [10.0.0.3/24]
+      dhcp6: false
+      routes:
+        - to: default
+          via: 10.0.0.2
+      nameservers:
+        addresses:
+          - 10.0.0.2
+        search:
+          - "corp.local."
+

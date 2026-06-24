@@ -13,4 +13,5 @@
       - rsync
       - bash-completion
       - dnsutils
+      - netplan.io
     state: present

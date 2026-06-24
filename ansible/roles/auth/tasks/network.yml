@@ -1,8 +1,8 @@
 ---
 - name: Criar configuração netplan
   template:
-    src: 01-gateway.yml.j2
-    dest: /etc/netplan/01-gateway.yaml
+    src: 01-auth.yml.j2
+    dest: /etc/netplan/01-auth.yaml
     owner: root
     group: root
     mode: "0600"
@@ -28,12 +28,5 @@
   file:
     path: /etc/network/interfaces
     state: absent
-   
-- name: Subir placa eth0
-  command: ip l set eth0 up
-
-- name: Subir placa eth1
-  command: ip l set eth1 up
-
 
 
