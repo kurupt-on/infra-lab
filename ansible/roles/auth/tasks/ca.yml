@@ -1,0 +1,9 @@
+---
+- name: Trazer CA
+  copy:
+    src: ../files/pki/ca.crt
+    dest: /usr/local/share/ca-certificates/corp-ca.crt
+    owner: root
+    group: root
+    mode: "0644" 
+  notify: update ca certificates

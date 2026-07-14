@@ -1,0 +1,79 @@
+---
+- name: Configurar dominio 
+  debconf:
+    name: slapd
+    question: slapd/domain
+    value: corp.local
+    vtype: string
+
+- name: Configurar Organização
+  debconf:
+    name: slapd
+    question: shared/organization
+    value: Corp
+    vtype: string
+
+- name: Configurar senha Admin
+  debconf:
+    name: slapd
+    question: slapd/password
+    value: "159632478"
+    vtype: password
+    no_log: true
+
+- name: Confirmar senha Admin
+  debconf:
+    name: slapd
+    question: slapd/repassword
+    value: "159632478"
+    vtype: password
+    no_log: true
+
+- name: Backend MDB
+  debconf:
+    name: slapd
+    question: slapd/backend
+    value: MDB
+    vtype: select
+
+- name: Não permitir configuração omitida
+  debconf:
+    name: slapd
+    question: slapd/no_configuration
+    value: false
+    vtype: boolean
+
+- name: Não mover BD antigo
+  debconf:
+    name: slapd
+    question: slapd/move_old_database
+    value: true
+    vtype: boolean
+
+- name: Não remover banco durante purge
+  debconf:
+    name: slapd
+    question: slapd/purge_database
+    value: false
+    vtype: boolean
+
+- name: Dump do banco ao reconfigurar
+  debconf:
+    name: slapd
+    question: slapd/dump_database
+    value: "when needed"
+    vtype: select
+
+- name: Invalidar banco antigo
+  debconf:
+    name: slapd
+    question: slapd/invalid_config
+    value: true
+    vtype: boolean
+
+- name: Instalar OpenLDAP
+  apt:
+    name:
+      - slapd
+      - ldap-utils
+    state: present

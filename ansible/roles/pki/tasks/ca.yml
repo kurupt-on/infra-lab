@@ -34,6 +34,12 @@
   args:
     creates: /etc/pki/corp/ca.crt
 
+- name: Copiar CA para host controller
+  fetch:
+    src: /etc/pki/corp/ca.crt
+    dest: ../files/pki/
+    flat: yes
+
 - name: Criar diretório issued
   file:
     path: /etc/pki/corp/issued
