@@ -1,0 +1,24 @@
+---
+- name: Copiar database.ldif
+  template:
+    src: 10-database.ldif.j2
+    dest: /tmp/database.ldif
+
+- name: Aplicar database.ldif
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/database.ldif
+
+- name: Copiar tls.ldif
+  template:
+    src: 11-tls.ldif.j2
+    dest: /tmp/tls.ldif
+
+- name: Aplicar tls.ldif
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/tls.ldif
+
+- name: Adicionar ldaps:///
+  replace:
+    path: /etc/default/slapd
+    regexp: "ldap:/// ldapi:///"
+    replace: "ldaps:/// ldap:/// ldapi:///"
+  notify: reiniciar slapd
+

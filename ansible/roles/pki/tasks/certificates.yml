@@ -44,3 +44,17 @@
   args: 
     creates: "/etc/pki/corp/issued/{{ item.name }}.crt"
   loop: "{{ gateway_certificates }}"
+
+- name: Copiar auth.crt
+  fetch:
+    src: /etc/pki/corp/issued/auth.crt
+    dest: ../roles/auth/files/
+    flat: yes
+
+- name: Copiar auth.key
+  fetch:
+    src: /etc/pki/corp/private/auth.key
+    dest: ../roles/auth/files/
+    flat: yes
+
+

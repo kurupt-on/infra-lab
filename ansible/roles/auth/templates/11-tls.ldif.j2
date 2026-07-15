@@ -1,0 +1,10 @@
+dn: cn=config
+changetype: modify
+add: olcTLSCACertificateFile
+olcTLSCACertificateFile: /etc/ssl/certs/corp-ca.pem
+-
+add: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/ssl/auth.crt
+-
+add: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/ssl/auth.key

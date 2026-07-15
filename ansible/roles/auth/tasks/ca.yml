@@ -4,6 +4,24 @@
     src: ../files/pki/ca.crt
     dest: /usr/local/share/ca-certificates/corp-ca.crt
     owner: root
-    group: root
+    group: openldap
     mode: "0644" 
-  notify: update ca certificates
+
+- name: CA update
+  command: update-ca-certificates
+
+- name: Trazer auth.crt
+  copy:
+    src: auth.crt
+    dest: /etc/ssl/auth.crt
+    owner: root
+    group: openldap
+    mode: "0644"
+
+- name: Trazer auth.key
+  copy:
+    src: auth.key
+    dest: /etc/ssl/auth.key
+    owner: root
+    group: openldap
+    mode: "0640"
