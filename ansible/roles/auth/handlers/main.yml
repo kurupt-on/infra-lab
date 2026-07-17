@@ -1,5 +1,5 @@
 ---
-- name: reinicir slapd
+- name: reiniciar slapd
   service:
     name: slapd
     state: restarted

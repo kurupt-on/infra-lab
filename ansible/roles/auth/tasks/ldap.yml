@@ -1,24 +1,204 @@
 ---
-- name: Copiar database.ldif
-  template:
-    src: 10-database.ldif.j2
-    dest: /tmp/database.ldif
+- name: Garantir dependências para modulo ldap
+  apt:
+    name: python3-ldap
+    state: present
 
-- name: Aplicar database.ldif
-  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/database.ldif
+- name: Configurar credenciais
+  ldap_attrs:
+    dn: olcDatabase={1}mdb,cn=config
+    attributes:
+      olcSuffix: "{{ olcSuffix }}"
+      olcRootDN: "{{ olcRootDN }}"
+      olcRootPW: "{{ olcRootPW }}"
+    state: exact
+    server_uri: "ldapi:///"
 
-- name: Copiar tls.ldif
-  template:
-    src: 11-tls.ldif.j2
-    dest: /tmp/tls.ldif
+- name: Configurar tls do OpenLdap
+  ldap_attrs:
+    dn: cn=config
+    attributes:
+      olcTLSCACertificateFile: /etc/ssl/certs/corp-ca.pem
+      olcTLSCertificateFile: /etc/ssl/auth.crt
+      olcTLSCertificateKeyFile: /etc/ssl/auth.key
+    state: exact
+    server_uri: "ldapi:///"
 
-- name: Aplicar tls.ldif
-  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/tls.ldif
+- name: Adicionando ou=Users
+  ldap_entry:
+    dn: ou=Users,dc=corp,dc=local
+    objectClass:
+      - top
+      - organizationalUnit 
+    attributes:
+      ou: Users
+    state: present
+    server_uri:  "{{ ldap_server }}"
+    bind_dn: "{{ olcRootDN }}"
+    bind_pw: "{{ olcRootPW }}"
+
+- name: Adicionar ou=Groups
+  ldap_entry:
+    dn: ou=Groups,dc=corp,dc=local
+    objectClass: 
+      - organizationalUnit
+      - top
+    attributes:
+      ou: Groups
+    state: present
+    server_uri:  "{{ ldap_server }}"
+    bind_dn: "{{ olcRootDN }}"
+    bind_pw: "{{ olcRootPW }}"
+
+- name: Adicionar ou=Hosts
+  ldap_entry:
+    dn: ou=Hosts,dc=corp,dc=local
+    objectClass:
+      - organizationalUnit
+      - top
+    attributes:
+      ou: Hosts
+    state: present
+    server_uri:  "{{ ldap_server }}"
+    bind_dn: "{{ olcRootDN }}"
+    bind_pw: "{{ olcRootPW }}"
+
+- name: Adicionar ou=Services
+  ldap_entry:
+    dn: ou=Services,dc=corp,dc=local
+    objectClass:
+      - organizationalUnit
+      - top
+    attributes:
+      ou: Services
+    state: present
+    server_uri:  "{{ ldap_server }}"
+    bind_dn: "{{ olcRootDN }}"
+    bind_pw: "{{ olcRootPW }}"
+
+- name: Adicionar cn=users
+  ldap_entry:
+    dn: cn=users,ou=Groups,dc=corp,dc=local
+    objectClass:
+      - top
+      - GroupOfNames
+    attributes:
+      cn: users
+      member: 
+        - uid=doom,ou=Users,dc=corp,dc=local
+        - uid=villan,ou=Users,dc=corp,dc=local
+    state: present
+    server_uri:  "{{ ldap_server }}"
+    bind_dn: "{{ olcRootDN }}"
+    bind_pw: "{{ olcRootPW }}"
+
+- name: Adicionar cn=users
+  ldap_entry:
+    dn: cn=posix-users,ou=Groups,dc=corp,dc=local
+    objectClass:
+      - top
+      - posixGroup
+    attributes:
+      cn: users
+      gidNumber: 10001
+      memberUid: 
+        - uid=doom,ou=Users,dc=corp,dc=local
+        - uid=villan,ou=Users,dc=corp,dc=local
+    state: present
+    server_uri:  "{{ ldap_server }}"
+    bind_dn: "{{ olcRootDN }}"
+    bind_pw: "{{ olcRootPW }}"
+
+- name: Adicionar cn=sysAdmins
+  ldap_entry:
+    dn: cn=sysAdmins,ou=Groups,dc=corp,dc=local
+    objectClass:
+      - top
+      - posixGroup
+    attributes:
+      cn: sysAdmins
+      gidNumber: 10000
+    state: present
+    server_uri:  "{{ ldap_server }}"
+    bind_dn: "{{ olcRootDN }}"
+    bind_pw: "{{ olcRootPW }}"
+
+- name: Adicionar uid=doom
+  ldap_entry:
+    dn: uid=doom,ou=Users,dc=corp,dc=local
+    objectClass:
+      - inetOrgPerson
+      - posixAccount
+      - shadowAccount
+    attributes:
+      uid: doom
+      cn: Daniel
+      sn: Dumile
+      givenName: doom
+      uidNumber: 10000
+      gidNumber: 10000
+      homeDirectory: /home/doom
+      loginShell: /bin/bash
+      mail: doom@corp.local
+    state: present
+    server_uri:  "{{ ldap_server }}"
+    bind_dn: "{{ olcRootDN }}"
+    bind_pw: "{{ olcRootPW }}"
+
+- name: Adicionar uid=villan
+  ldap_entry:
+    dn: uid=villan,ou=Users,dc=corp,dc=local
+    objectClass:
+      - inetOrgPerson
+      - posixAccount
+      - shadowAccount
+    attributes:
+      uid: villan
+      cn: Viktor
+      sn: Vaughn
+      givenName: villan
+      uidNumber: 10001
+      gidNumber: 10001
+      homeDirectory: /home/villan
+      loginShell: /bin/bash
+      mail: villan@corp.local
+    state: present
+    server_uri:  "{{ ldap_server }}"
+    bind_dn: "{{ olcRootDN }}"
+    bind_pw: "{{ olcRootPW }}"
+
+- name: Configurar ACLs 
+  community.general.ldap_attrs:
+    dn: "olcDatabase={1}mdb,cn=config"
+    attributes:
+      olcAccess:
+        - >-
+          {0}to attrs=userPassword
+          by dn.exact="cn=admin,dc=corp,dc=local" write
+          by self write
+          by anonymous auth
+          by * none
+
+        - >-
+          {1}to attrs=shadowLastChange
+          by dn.exact="cn=admin,dc=corp,dc=local" write
+          by self write
+          by users read
+          by * none
+
+        - >-
+          {2}to *
+          by dn.exact="cn=admin,dc=corp,dc=local" write
+          by users read
+          by * none
+
+    state: exact
+    server_uri: "ldapi:///"
 
 - name: Adicionar ldaps:///
   replace:
     path: /etc/default/slapd
-    regexp: "ldap:/// ldapi:///"
-    replace: "ldaps:/// ldap:/// ldapi:///"
+    regexp: 'SLAPD_SERVICES="ldap:/// ldapi:///"'
+    replace: 'SLAPD_SERVICES="ldaps:/// ldap:/// ldapi:///"'
   notify: reiniciar slapd
 

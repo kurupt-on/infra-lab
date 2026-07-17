@@ -1,0 +1,9 @@
+---
+- name: Garantir sssd
+  apt:
+    name: sssd
+  state: present
+
+- name: Copiar a configuração do sssd.conf
+  template:
+    src: 
