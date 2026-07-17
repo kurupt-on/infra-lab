@@ -24,6 +24,58 @@
     state: exact
     server_uri: "ldapi:///"
 
+- name: Configurar ACLs 
+  community.general.ldap_attrs:
+    dn: "olcDatabase={1}mdb,cn=config"
+    attributes:
+      olcAccess:
+        - >-
+          {0}to attrs=userPassword
+          by dn.exact="cn=admin,dc=corp,dc=local" write
+          by self write
+          by anonymous auth
+          by * none
+
+        - >-
+          {1}to attrs=shadowLastChange
+          by dn.exact="cn=admin,dc=corp,dc=local" write
+          by self write
+          by users read
+          by * none
+
+        - >-
+          {2}to *
+          by dn.exact="cn=admin,dc=corp,dc=local" write
+          by users read
+          by * none
+
+    state: exact
+    server_uri: "ldapi:///"
+
+- name: Adicionar memberof
+  ldap_attrs:
+    server_uri: "ldapi:///"
+    dn: cn=module{0},cn=config
+    attributes:
+      olcModuleLoad:
+        - memberof
+    state: present
+
+- name: Criar overlay memberOf
+  ldap_entry:
+    server_uri: "ldapi:///"
+    dn: olcOverlay=memberof,olcDatabase={1}mdb,cn=config
+    objectClass:
+      - olcOverlayConfig
+      - olcMemberof
+    attributes:
+      olcOverlay: memberof
+      olcMemberOfRefInt: "TRUE"
+      olcMemberOfDangLing: ignore
+      olcMemberOfGroupOC: groupOfNames
+      olcMemberOfMemberAD: member
+      olcMemberOfMemberOfAD: memberof
+
 - name: Adicionando ou=Users
   ldap_entry:
     dn: ou=Users,dc=corp,dc=local
@@ -92,7 +144,7 @@
     bind_dn: "{{ olcRootDN }}"
     bind_pw: "{{ olcRootPW }}"
 
-- name: Adicionar cn=users
+- name: Adicionar cn=posix-users
   ldap_entry:
     dn: cn=posix-users,ou=Groups,dc=corp,dc=local
     objectClass:
@@ -102,8 +154,8 @@
       cn: users
       gidNumber: 10001
       memberUid: 
-        - uid=doom,ou=Users,dc=corp,dc=local
-        - uid=villan,ou=Users,dc=corp,dc=local
+        - doom
+        - villan
     state: present
     server_uri:  "{{ ldap_server }}"
     bind_dn: "{{ olcRootDN }}"
@@ -167,38 +219,11 @@
     bind_dn: "{{ olcRootDN }}"
     bind_pw: "{{ olcRootPW }}"
 
-- name: Configurar ACLs 
-  community.general.ldap_attrs:
-    dn: "olcDatabase={1}mdb,cn=config"
-    attributes:
-      olcAccess:
-        - >-
-          {0}to attrs=userPassword
-          by dn.exact="cn=admin,dc=corp,dc=local" write
-          by self write
-          by anonymous auth
-          by * none
-
-        - >-
-          {1}to attrs=shadowLastChange
-          by dn.exact="cn=admin,dc=corp,dc=local" write
-          by self write
-          by users read
-          by * none
-
-        - >-
-          {2}to *
-          by dn.exact="cn=admin,dc=corp,dc=local" write
-          by users read
-          by * none
-
-    state: exact
-    server_uri: "ldapi:///"
-
 - name: Adicionar ldaps:///
   replace:
     path: /etc/default/slapd
     regexp: 'SLAPD_SERVICES="ldap:/// ldapi:///"'
     replace: 'SLAPD_SERVICES="ldaps:/// ldap:/// ldapi:///"'
   notify: reiniciar slapd
+        
 
