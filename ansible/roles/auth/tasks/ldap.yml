@@ -61,6 +61,15 @@
         - memberof
     state: present
 
+- name: Adicioinar refint
+  ldap_attrs:
+    server_uri: "ldapi:///"
+    dn: cn=module{0},cn=config
+    attributes:
+      olcModuleLoad:
+        - refint
+    state: present
+
 - name: Criar overlay memberOf
   ldap_entry:
     server_uri: "ldapi:///"
@@ -75,6 +84,23 @@
       olcMemberOfGroupOC: groupOfNames
       olcMemberOfMemberAD: member
       olcMemberOfMemberOfAD: memberof
+    state: present
+
+- name: Criar overlay refint
+  ldap_entry:
+    server_uri: "ldapi:///"
+    dn: olcOverlay=refint,olcDatabase={1}mdb,cn=config
+    objectClass:
+      - olcOverlayConfig
+      - olcRefintConfig
+    attributes:
+      olcOverlay: refint
+      olcRefintAttribute:
+        - member
+        - manager
+        - owner
+        - seeAlso
+    state: present
 
 - name: Adicionando ou=Users
   ldap_entry:

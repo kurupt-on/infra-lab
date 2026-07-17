@@ -1,7 +1,10 @@
 ---
 - name: Garantir sssd
   apt:
-    name: sssd
+    name: 
+      - sssd
+      - libnss-sss
+      - libpam-sss
   state: present
 
 - name: Copiar a configuração do sssd.conf

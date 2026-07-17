@@ -1,4 +1,12 @@
 [LDAP]
 services = nss, pam
-
+config_file_version = 2
 domains = corp.local
+
+[domains/corp.local]
+id_provider = ldap
+auth_provider = ldap
+ldap_uri = "{{ ldap_server }}"
+
+ldap_search_base = ou=Users,dc=corp,dc=local
+
