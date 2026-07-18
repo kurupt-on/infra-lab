@@ -6,6 +6,43 @@ olcRootPW: !vault |
           3166626565343338660a383666376366643964663566383661363163343733653766323233396134
           3633
 olcRootDN: cn=admin,dc=corp,dc=local
+
+bind_dn_admin: "{{ olcRootDN }}"
+bind_pw_admin: "{{ olcRootPW }}"
+
 olcSuffix: dc=corp,dc=local
+
 ldap_server: ldap://auth.corp.local 
 ldap_server_tls: ldaps://auth.corp.local
+
+ldap_service_accounts:
+
+  - name: sssd
+    description: SSSD Bind Account
+    password: "{{ vault_sssd_password }}"
+
+  - name: grafana
+    description: Grafana Bind Account
+    password: "{{ vault_grafana_password }}"
+
+  - name: postfix
+    description: Postfix Bind Account
+    password: "{{ vault_postfix_password }}"
+
+  - name: dovecot
+    description: Dovecot Bind Account
+    password: "{{ vault_dovecot_password }}"
+
+  - name: prometheus
+    description: Prometheus Bind Account
+    password: "{{ vault_prometheus_password }}"
+
+  - name: roundcube
+    description: Roundcube Bind Account
+    password: "{{ vault_roundcube_password }}"
+
+  - name: squid
+    description: Squid Bind Account
+    password: "{{ vault_squid_password }}"
+
+

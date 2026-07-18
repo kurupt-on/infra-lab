@@ -1,0 +1,10 @@
+---
+- name: Instalar SSSD
+  apt:
+    name:
+      - sssd
+      - libnss-sss
+      - libpam-sss
+      - ldap-utils
+      - sssd-tools
+    state: present

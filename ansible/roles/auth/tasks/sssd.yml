@@ -5,8 +5,12 @@
       - sssd
       - libnss-sss
       - libpam-sss
-  state: present
+    state: present
 
 - name: Copiar a configuração do sssd.conf
   template:
-    src: 
+    src: 20-sssd.conf.j2
+    dest: /etc/sssd/conf.d/sssd.conf
+    owner: root
+    group: root
+    mode: "0600"

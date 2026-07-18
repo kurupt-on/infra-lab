@@ -201,50 +201,6 @@
     bind_dn: "{{ olcRootDN }}"
     bind_pw: "{{ olcRootPW }}"
 
-- name: Adicionar uid=doom
-  ldap_entry:
-    dn: uid=doom,ou=Users,dc=corp,dc=local
-    objectClass:
-      - inetOrgPerson
-      - posixAccount
-      - shadowAccount
-    attributes:
-      uid: doom
-      cn: Daniel
-      sn: Dumile
-      givenName: doom
-      uidNumber: 10000
-      gidNumber: 10000
-      homeDirectory: /home/doom
-      loginShell: /bin/bash
-      mail: doom@corp.local
-    state: present
-    server_uri:  "{{ ldap_server }}"
-    bind_dn: "{{ olcRootDN }}"
-    bind_pw: "{{ olcRootPW }}"
-
-- name: Adicionar uid=villan
-  ldap_entry:
-    dn: uid=villan,ou=Users,dc=corp,dc=local
-    objectClass:
-      - inetOrgPerson
-      - posixAccount
-      - shadowAccount
-    attributes:
-      uid: villan
-      cn: Viktor
-      sn: Vaughn
-      givenName: villan
-      uidNumber: 10001
-      gidNumber: 10001
-      homeDirectory: /home/villan
-      loginShell: /bin/bash
-      mail: villan@corp.local
-    state: present
-    server_uri:  "{{ ldap_server }}"
-    bind_dn: "{{ olcRootDN }}"
-    bind_pw: "{{ olcRootPW }}"
-
 - name: Adicionar ldaps:///
   replace:
     path: /etc/default/slapd

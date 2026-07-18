@@ -2,6 +2,8 @@
 - import_tasks: packages.yml
 - import_tasks: ca.yml
 - import_tasks: ldap.yml
+- import_tasks: user-ldap.yml
+#- import_tasks: sssd.yml
 
 - name: Configurar timezone
   timezone:
