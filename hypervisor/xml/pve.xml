@@ -1,0 +1,47 @@
+<domain type='kvm'>
+  <name>pve</name>
+  <memory unit='MiB'>8192</memory>
+  <vcpu>4</vcpu>
+  <os firmware='efi'>
+    <type arch='x86_64' machine='q35'>hvm</type>
+    <loader readonly='yes' type='pflash'>
+      /usr/share/OVMF/OVMF_CODE_4M.fd
+    </loader>
+    <nvram template='/usr/share/OVMF/OVMF_VARS_4M.fd'>
+      /var/lib/libvirt/qemu/nvram/pve_VARS.fd
+    </nvram>
+  </os>
+  <cpu mode='host-passthrough'/>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+  <devices>
+    <emulator>/usr/bin/qemu-system-x86_64</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/var/lib/libvirt/images/infra-lab/pve.qcow2'/>
+      <target dev='sda' bus='scsi'/>
+    </disk>
+    <controller type='scsi' model='virtio-scsi'/>
+    <interface type='network'>
+      <mac address='42:55:b0:a1:69:d3'/>
+      <source network='virbr0'/>
+      <model type='virtio'/>
+    </interface>
+    <interface type='network'>
+      <mac address='52:54:00:00:10:02'/>
+      <source network='virbr1'/>
+      <model type='virtio'/>
+    </interface>
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+    <tpm model='tpm-crb'>
+      <backend type='emulator' version='2.0'/>
+    </tpm>
+  </devices>
+</domain>

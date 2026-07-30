@@ -1,0 +1,5 @@
+<network>
+  <name>virbr1</name>
+  <forward mode='none'/>
+  <bridge name='virbr1' stp='on' delay='0'/> 
+</network>
