@@ -5,3 +5,5 @@ terraform/proxmox/.terraform/
 ansible/.vault_key
 ./*.crt
 ./*.key
+hypervisor/iso/*
+hypervisor/storage/*

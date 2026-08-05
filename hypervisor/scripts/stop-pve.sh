@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-. ../.env.host
+. "$( dirname $0 )/../.env.host"
 
 virsh stop "$VM"

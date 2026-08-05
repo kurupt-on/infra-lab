@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
 for net in virbr1 virbr0; do
@@ -6,4 +7,6 @@ for net in virbr1 virbr0; do
     virsh net-undefine "$net" 2>/dev/null || true
 done
 
-echo "Redes removidas."
+clear
+printf "Networks destruidas.\n"
+echo

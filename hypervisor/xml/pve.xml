@@ -2,14 +2,12 @@
   <name>pve</name>
   <memory unit='MiB'>8192</memory>
   <vcpu>4</vcpu>
-  <os firmware='efi'>
+  <os>
     <type arch='x86_64' machine='q35'>hvm</type>
-    <loader readonly='yes' type='pflash'>
-      /usr/share/OVMF/OVMF_CODE_4M.fd
-    </loader>
-    <nvram template='/usr/share/OVMF/OVMF_VARS_4M.fd'>
-      /var/lib/libvirt/qemu/nvram/pve_VARS.fd
-    </nvram>
+    <loader readonly='yes' type='pflash'>/usr/share/OVMF/OVMF_CODE_4M.fd</loader>
+    <nvram template='/usr/share/OVMF/OVMF_VARS_4M.fd'>/var/lib/libvirt/qemu/nvram/pve_VARS.fd</nvram>
+    <boot dev='cdrom'/>
+    <boot dev='hd'/>
   </os>
   <cpu mode='host-passthrough'/>
   <features>
@@ -22,6 +20,12 @@
       <driver name='qemu' type='qcow2'/>
       <source file='/var/lib/libvirt/images/infra-lab/pve.qcow2'/>
       <target dev='sda' bus='scsi'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/var/lib/libvirt/images/iso/proxmox.iso'/>
+      <target dev='sdb' bus='sata'/>
+      <readonly/>
     </disk>
     <controller type='scsi' model='virtio-scsi'/>
     <interface type='network'>
@@ -40,8 +44,15 @@
     <console type='pty'>
       <target type='serial' port='0'/>
     </console>
+    <graphics type='spice' autoport='yes' listen='127.0.0.1'/>
+    <video>
+      <model type='virtio' heads='1' primary='yes'/>
+    </video>
     <tpm model='tpm-crb'>
       <backend type='emulator' version='2.0'/>
     </tpm>
+    <channel type='unix'>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+    </channel>
   </devices>
 </domain>
