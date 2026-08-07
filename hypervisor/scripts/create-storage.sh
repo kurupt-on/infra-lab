@@ -5,7 +5,8 @@ set -euo pipefail
 . "$( dirname "$0" )/../.env.host"
 HV_DIR=$( cd "$( dirname "$0" )/../" && pwd )
 
-clear
+tput civis
+tput sc
 
 if [[ ! -d "${POOL_DIR}" ]];then
     mkdir -p "${POOL_DIR}" &>/dev/null
@@ -14,7 +15,6 @@ fi
 #if [[ ! -d "${HV_DIR}/storage/${POOL}" ]];then
 #    mkdir -p "${POOL_DIR}" &>/dev/null
 #fi
-
 
 if [[ ! -d "${POOL_ISO_DIR}" ]];then
     mkdir -p "${POOL_ISO_DIR}" &>/dev/null
@@ -50,6 +50,8 @@ if [[ ! -L "${HV_DIR}/storage/${POOL_ISO}" ]];then
     ln -s "${POOL_ISO_DIR}" "${HV_DIR}/storage/${POOL_ISO}"
 fi
 
-clear
-printf "Storage criado\n"
-echo
+tput rc
+tput ed
+tput cnorm
+
+printf "%-20s OK\n" "CREATE STORAGE"

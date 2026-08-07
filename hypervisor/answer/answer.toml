@@ -1,0 +1,23 @@
+[global]
+keyboard = "pt-br"
+country = "br"
+fqdn = "pve.corp.local"
+mailto = "admin@localhost"
+timezone = "America/Santarem"
+root_password = "119632478"
+reboot-mode = "power-off"
+
+[network]
+source = "from-answer"
+cidr = "192.168.100.10/24"
+gateway = "192.168.100.1"
+dns = "1.1.1.1"
+
+filter.ID_NET_NAME= "enp1s0"
+[disk-setup]
+filesystem = "ext4"
+disk_list = ["sda"]
+
+[first-boot]
+source = "from-iso"
+ordering = "network-online"

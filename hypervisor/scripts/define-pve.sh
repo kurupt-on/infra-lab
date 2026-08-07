@@ -4,7 +4,6 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-virsh define "$ROOT_DIR/xml/pve.xml"
+virsh define "$ROOT_DIR/xml/pve.xml" &>/dev/null
 
-printf "VM definida\n"
-echo
+printf "%-20s OK\n" "DEFINE PVE"

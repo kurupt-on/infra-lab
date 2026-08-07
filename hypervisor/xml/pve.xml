@@ -23,7 +23,7 @@
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw'/>
-      <source file='/var/lib/libvirt/images/iso/proxmox.iso'/>
+      <source file='/var/lib/libvirt/images/iso/proxmox-auto.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
     </disk>
