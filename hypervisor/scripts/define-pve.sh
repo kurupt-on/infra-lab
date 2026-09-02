@@ -2,8 +2,9 @@
 
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=../.env.host
+. "$( dirname "$0" )/../.env.host"
 
-virsh define "$ROOT_DIR/xml/pve.xml" &>/dev/null
+virsh define "${PVE_XML}" &>/dev/null
 
 printf "%-20s OK\n" "DEFINE PVE"

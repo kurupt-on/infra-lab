@@ -11,13 +11,15 @@ if [[ ! -f "/usr/share/keyrings/proxmox-archive-keyring.gpg" ]];then
     tput cnorm
 fi
 
-cat > /etc/apt/sources.list.d/proxmox.sources << EOF
+if [[ ! -f "/etc/apt/sources.list.d/proxmox.sources" && ! -f "/etc/apt/sources.list.d/proxmox.sources.bak" ]];then
+	cat > /etc/apt/sources.list.d/proxmox.sources << EOF
 Types: deb
 URIs: http://download.proxmox.com/debian/pve
 Suites: trixie
 Components: pve-no-subscription
 Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
 EOF
+fi
 
 tput civis
 tput sc

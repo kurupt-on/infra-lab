@@ -1,28 +1,32 @@
 #!/usr/bin/env bash
 
-set -uo pipefail
+set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-NETWORK_DIR="$ROOT_DIR/xml/networks"
+# shellcheck source=../.env.host
+. "$( dirname "$0" )/../.env.host"
+
+if virsh net-info --network default &>/dev/null ;then
+	virsh net-undefine --network default &>/dev/null
+fi
 
 tput civis
 tput sc
 
-for net in virbr0 virbr1; do
-    XML="$NETWORK_DIR/${net}.xml"
+for net in "virbr0" "virbr1"; do
+    xml="$NETWORK_DIR/${net}.xml"
 
-    if ! virsh net-info "$net" &>/dev/null; then
-        virsh net-define "$XML"
+    if ! virsh net-info --network "${net}" &>/dev/null; then
+        virsh net-define "$xml"
     fi
 
-    INFO=$(virsh net-info "$net" 2>/dev/null || true)
+    info=$( LC_ALL=C virsh net-info --network "${net}" 2>/dev/null || true)
 
-    if ! echo "$INFO" | grep -q "Active:.*yes"; then
-        virsh net-start "$net"
+    if ! echo "${info}" | grep -q "Active:.*yes"; then
+        virsh net-start "${net}"
     fi
 
-    if ! echo "$INFO" | grep -q "Autostart:.*yes"; then
-        virsh net-autostart "$net"
+    if ! echo "${info}" | grep -q "Autostart:.*yes"; then
+        virsh net-autostart "${net}"
     fi
 done
 
