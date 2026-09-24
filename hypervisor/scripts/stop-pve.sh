@@ -2,4 +2,8 @@
 
 . "$( dirname $0 )/../.env.host"
 
-virsh stop "$VM"
+if [[ "$( LC_ALL=C virsh domstate --domain "${VM}" )" == "running" ]];then
+	virsh shutdown --domain "${VM}" &>/dev/null
+
+	printf "%-20s OK\n" "STOP PVE"
+fi

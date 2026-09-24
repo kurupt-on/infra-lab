@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 
-set e
+set -euo pipefail
 
-. "$( dirname $0 )/../.env.host"
+SCRIPT_DIR=$( dirname "$0" )
 
-virsh destroy "$VM" #&>/dev/null || true
-virsh undefine "$VM" --nvram #&>/dev/null || true
-virsh vol-delete "$DISK" --pool "$POOL" #2>/dev/null
-virsh pool-destroy --pool "$POOL" #2>/dev/null
-virsh pool-undefine --pool "$POOL" #2>/dev/null
-printf "Done\n"
-echo
+printf "=================================\n"
+printf "%-20s %s\n" "TASK" "STATUS"
+printf "=================================\n"
+
+./"${SCRIPT_DIR}/stop-pve.sh"
+./"${SCRIPT_DIR}/undefine-pve.sh"
+./"${SCRIPT_DIR}/destroy-storage.sh"
+./"${SCRIPT_DIR}/destroy-networks.sh"
+./"${SCRIPT_DIR}/clean-pve.sh"
+
+printf "=================================\n"
+printf "%-20s %s\n\n" "REMOVE ALL" "COMPLETED"

@@ -9,6 +9,7 @@ printf "=================================\n"
 printf "%-20s %s\n" "TASK" "STATUS"
 printf "=================================\n"
 
+./"${SCRIPT_DIR}/config-key.sh"
 ./"${SCRIPT_DIR}/add-repository.sh"
 ./"${SCRIPT_DIR}/install-packages.sh"
 ./"${SCRIPT_DIR}/download-pve-iso.sh"

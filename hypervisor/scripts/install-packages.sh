@@ -15,6 +15,8 @@ apt-get install -y qemu-system-x86 \
                    libvirt-daemon \
                    libvirt-clients \
                    dnsmasq-base \
+                   ansible \
+                   python3.13 \
                    proxmox-auto-install-assistant
 
 tput rc

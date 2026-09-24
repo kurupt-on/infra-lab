@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -uo pipefail
 
-. "$( dirname $0 )/../.env.host"
+. "$( dirname "$0" )/../.env.host"
 
-virsh undefine "${VM}"
+virsh undefine --domain "${VM}" --nvram &>/dev/null
 
-printf "VM indefinida\n"
+printf "%-20s OK\n" "UNDEFINE PVE"
+

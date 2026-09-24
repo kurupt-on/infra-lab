@@ -2,20 +2,24 @@
 
 set -uo pipefail
 
-. "$( dirname $0 )/../.env.host"
+. "$( dirname "$0" )/../.env.host"
 
-virsh destroy "$VM" 2>/dev/null || true
-virsh undefine "$VM" --nvram 2>/dev/null || true
+link1="/iso/proxmox-auto.iso"
+link2="/storage/iso"
+link3="/storage/infra-lab"
 
-virsh vol-delete "$DISK" --pool "$POOL" 2>/dev/null
-#virsh vol-delete "proxmox.iso" --pool "${POOL_ISO}" 2>/dev/null
+virsh vol-delete --pool "${INFRA_POOL}" --vol "${DISK}" &>/dev/null
+virsh vol-delete --pool "${ISO_POOL}" --vol "proxmox-auto.iso"  &>/dev/null
 
-virsh pool-destroy --pool "$POOL" 2>/dev/null
-virsh pool-undefine --pool "$POOL" 2>/dev/null
+for pool in "${INFRA_POOL}" "${ISO_POOL}";do
+    virsh pool-destroy --pool "${pool}" &>/dev/null
+    virsh pool-undefine --pool "${pool}" &>/dev/null
+done
 
-virsh pool-destroy --pool "$POOL_ISO" 2>/dev/null
-virsh pool-undefine --pool "$POOL_ISO" 2>/dev/null
+for link in "${link1}" "${link2}"  "${link3}";do
+    if [[ -L "${HP_DIR}${link}" ]];then
+        rm "${HP_DIR}${link}"
+    fi
+done
 
-clear
-printf "Storage destruido\n"
-echo
+printf "%-20s OK\n" "DESTROY STORAGE"
